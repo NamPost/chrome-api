@@ -1,0 +1,17 @@
+version: '2.1'
+services:
+  chrome_api:
+    restart: unless-stopped
+    image: headless-chrome
+    container_name: chrome_api
+    networks:
+      - proxy
+    ports:
+      - 4300:4300
+    volumes:
+      - .:/usr/src/app
+
+
+networks:
+    proxy:
+        name: proxy
