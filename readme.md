@@ -2,7 +2,7 @@
 
 An API wrapper for puppeteer to generate PDF documents and screenshots from URL's and HTML content
 
-## Environment variables
+### Environment variables
 
 | Variable          | Description                       |
 | ----------------- | :-------------------------------- |
@@ -12,16 +12,16 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 | DATABASE_HOST     | Sets the MySQL database host      |
 | DATABASE_PORT     | Sets the MySQL database port      |
 
-## Database migrations
+### Database migrations
 
 Uses the [Sequilize ORM](https://sequelize.org)
 
 Run database migrations with
 `npx sequelize-cli db:migrate`
 
-## API endpoints
+### API endpoints
 
-### /screenshot
+#### /screenshot
 
 Takes a screenshot from a webpage or HTML content
 
@@ -42,7 +42,7 @@ returns:
 | filename | The filename of the created screenshot, can be accessed with {endpoint}/{filename} |
 | message  | The error message if the operation was not successfull |
 
-### /pdf
+#### /pdf
 Creates a PDF document from a webpage or HTML content
 
 input parmeters:
@@ -61,7 +61,7 @@ returns:
 | filename | The filename of the created screenshot, can be accessed with {endpoint}/{filename} |
 | message  | The error message if the operation was not successfull |
 
-## Authentication
+### Authentication
 Every API call needs to have an the "Authorization" HTTP header set with an api key, e.g.
 
 Authorization: {api key}
