@@ -56,7 +56,7 @@ app.get('/screenshot', [privateRoute], async (req, res) => {
 
     // screenshot from html content
     if (params.html) {
-        await page.setContent('<h1>Hello, world!</h1>');
+        await page.setContent(params.html);
     }
 
     let filename = uuidv4() + "." + output
@@ -114,7 +114,7 @@ app.get('/pdf', [privateRoute], async (req, res) => {
 
     // pdf from html content
     if (params.html) {
-        await page.setContent('<h1>Hello, world!</h1>');
+        await page.setContent(params.html);
     }
 
 
