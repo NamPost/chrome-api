@@ -5,17 +5,14 @@ import puppeteer from 'puppeteer';
 import { privateRoute } from "./lib/middleware.js";
 import { create_screenshot, create_pdf } from "./lib/app.js"
 import bodyParser from "body-parser";
-import { v4 as uuidv4 } from 'uuid';
 import amqp from 'amqplib';
 import dotenv from "dotenv";
 import database from "./models/index.js"
-import { EmptyResultError } from "sequelize";
 
 const app = express();
 const QUEUENAME = "chrome_api"
 dotenv.config();
 
-console.log(process.env.RABBITMQ_URL)
 
 app.use(express.static('public'))
 app.use(bodyParser.json({ limit: '3mb' }));
@@ -154,7 +151,7 @@ app.get('/pdf', [privateRoute], async (req, res) => {
             jobId: job.id
         })
     }else{
-        let result = await create_screenshot(params)
+        let result = await create_pdf(params)
 
         if(!result.success){
             res.status(400);
