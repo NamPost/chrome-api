@@ -64,7 +64,6 @@ returns:
 | -------- | :-------------------------------------------- |
 | success | The outcome of the call |
 | jobId | The id of the job in the task queue |
-| filename | The filename of the created screenshot, can be accessed with {endpoint}/{filename} |
 | message | The error message if the operation was not successfull |
 
 ### /job/{id}
