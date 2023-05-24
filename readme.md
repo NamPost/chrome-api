@@ -73,9 +73,9 @@ Returns the status of a job in the task queue
 returns:
 | Variable | Description |
 | -------- | :-------------------------------------------- |
-| id | the task id |
-| complete | returns the comppletion status of the job |
-| success | if the task was processed successfully or not |
+| id | The task id |
+| complete | The completion status of the job |
+| success | If the task was processed successfully or not |
 | filename | The output filename, can be accessed with {endpoint}/{filename} |
 | message | The error message if the operation was not successfull |
 | parameters | The input prameters for the task |
