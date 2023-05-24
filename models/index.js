@@ -1,6 +1,7 @@
 import Sequelize from 'sequelize';
 import process from 'process';
 import apiKeys from "./apiKeys.js";
+import jobs from "./jobs.js";
 import dotenv from "dotenv";
 import mysql2 from "mysql2";
 
@@ -23,7 +24,8 @@ const sequelize = new Sequelize(
 );
 
 const db = {
-	'apiKeys': apiKeys(sequelize, Sequelize.DataTypes)
+	'apiKeys': apiKeys(sequelize, Sequelize.DataTypes),
+	'jobs': jobs(sequelize, Sequelize.DataTypes)
 };
 
 Object.keys(db).forEach(modelName => {
@@ -36,42 +38,3 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 export default db;
-
-// import { readdirSync } from "fs";
-// import { basename, dirname } from "path";
-// import { Sequelize, DataTypes } from "sequelize";
-// import { fileURLToPath } from 'url';
-
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-
-
-// const db = {};
-
-
-// export default (async () => {
-// 	const files = readdirSync(__dirname)
-// 		.filter(
-// 			(file) => file.indexOf('.') !== 0
-// 				&& file !== basename(__filename)
-// 				&& file.slice(-3) === '.js',
-// 		);
-
-// 	files.forEach(async file => {
-// 		const model = await import(`./${file}`);
-// 		const namedModel = model.default(sequelize, DataTypes);
-// 		db[namedModel.name] = namedModel;
-// 	});
-
-// 	Object.keys(db).forEach((modelName) => {
-// 		if (db[modelName].associate) {
-// 			db[modelName].associate(db);
-// 		}
-// 	});
-
-// 	db.sequelize = sequelize;
-// 	db.Sequelize = Sequelize;
-
-// 	return db;
-// })();

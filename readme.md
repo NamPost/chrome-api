@@ -11,6 +11,10 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 | DATABASE_PASSWORD | Sets the MySQL database passoword |
 | DATABASE_HOST     | Sets the MySQL database host      |
 | DATABASE_PORT     | Sets the MySQL database port      |
+| RABBITMQ_USER     | Sets the rabbitmq username        |
+| RABBITMQ_PASS     | Sets the rabbitmq password        |
+| RABBITMQ_PORT     | Sets the rabbitmq port            |
+| RABBITMQ_HOST     | Sets the rabbitmq hostname        |
 
 ### Database migrations
 
@@ -38,11 +42,12 @@ input parmeters:
 returns:
 | Variable | Description |
 | -------- | :-------------------------------------------- |
-| success  | The outcome of the call |
-| filename | The filename of the created screenshot, can be accessed with {endpoint}/{filename} |
-| message  | The error message if the operation was not successfull |
+| success | The outcome of the call |
+| jobId | The id of the job in the task queue |
+| message | The error message if the operation was not successfull |
 
 #### /pdf
+
 Creates a PDF document from a webpage or HTML content
 
 input parmeters:
@@ -57,11 +62,29 @@ input parmeters:
 returns:
 | Variable | Description |
 | -------- | :-------------------------------------------- |
-| success  | The outcome of the call |
+| success | The outcome of the call |
+| jobId | The id of the job in the task queue |
 | filename | The filename of the created screenshot, can be accessed with {endpoint}/{filename} |
-| message  | The error message if the operation was not successfull |
+| message | The error message if the operation was not successfull |
+
+### /job/{id}
+
+Returns the status of a job in the task queue
+
+returns:
+| Variable | Description |
+| -------- | :-------------------------------------------- |
+| id | the task id |
+| complete | returns the comppletion status of the job |
+| success | if the task was processed successfully or not |
+| filename | The output filename, can be accessed with {endpoint}/{filename} |
+| message | The error message if the operation was not successfull |
+| parameters | The input prameters for the task |
+| createdAt | Timestamp of when the job was created |
+| updatedAt | Timestamp of when the job was updated |
 
 ### Authentication
+
 Every API call needs to have an the "Authorization" HTTP header set with an api key, e.g.
 
 Authorization: {api key}

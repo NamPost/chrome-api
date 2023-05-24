@@ -5,8 +5,14 @@ import puppeteer from 'puppeteer';
 import { privateRoute } from "./lib/middleware.js";
 import bodyParser from "body-parser";
 import { v4 as uuidv4 } from 'uuid';
+import amqp from 'amqplib';
+import dotenv from "dotenv";
+import database from "./models/index.js"
 
 const app = express();
+const RABBITMQ_URL = 'amqp://'+process.env.RABBITMQ_USER+':'+process.env.RABBITMQ_PASS+'@'+process.env.RABBITMQ_HOST+':'+process.env.RABBITMQ_PORT
+const QUEUENAME = "chrome_api"
+dotenv.config();
 
 app.use(express.static('public'))
 app.use(bodyParser.json({ limit: '3mb' }));
@@ -14,123 +20,134 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/screenshot', [privateRoute], async (req, res) => {
     let params = req.body
-    let width = params.width || 1920
-    let height = params.height || 1080
-    let output = "png"
+    params.function = "screenshot"
+
+    // set the default width and height
+    if(!params.width){
+        params.width = 1920
+    }
+
+    if(!params.height){
+        params.height = 1080
+    }
 
     // validate input parameters
     if (!params.url && !params.html) {
         return res.json({
             success: false,
-            messae: "Must provide either a url or html content"
+            message: "Must provide either a url or html content"
         })
     }
 
     if (params.output && !['png', 'jpg'].includes(params.output)) {
         return res.json({
             success: false,
-            messae: "Output must be one of: png, jpg"
+            message: "Output must be one of: png, jpg"
         })
     }
 
-    // initialise browser
-    const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: '/usr/bin/google-chrome',
-        args: [
-            "--no-sandbox",
-            "--disable-gpu",
-        ]
+    // write the job to the db
+    const job = database.jobs.build({
+        parameters: JSON.stringify(params)
     });
 
-    const page = await browser.newPage();
-    await page.setViewport({
-        width: parseInt(width),
-        height: parseInt(height)
-    });
+    await job.save();
 
-    // screenshot from url
-    if (params.url) {
-        await page.goto(params.url);
+    // set the job id
+    params.jobId = job.id
+
+    // send to queue
+    try{
+        let conn = await amqp.connect(RABBITMQ_URL)
+        let ch = await conn.createChannel()
+        await ch.assertQueue(QUEUENAME, { durable: false })
+        
+        // Publish job
+        await ch.sendToQueue(QUEUENAME, Buffer.from(JSON.stringify(params), 'utf8'))
+        await ch.close()
+        await conn.close()
+    }catch(e){
+        return res.json({
+            success: true,
+            message: e.message
+        })
     }
-
-    // screenshot from html content
-    if (params.html) {
-        await page.setContent(params.html);
-    }
-
-    let filename = uuidv4() + "." + output
-
-    let screenshot_options = {
-        fullPage: true,
-        type: output,
-        path: `./public/` + filename
-    }
-
-    if (output == "jpg") {
-        screenshot_options.quality = 100
-    }
-
-    // capture screenshot
-    await page.screenshot(screenshot_options);
-    await browser.close();
 
     res.json({
         success: true,
-        filename: filename
+        jobId: job.id
     })
 });
 
 app.get('/pdf', [privateRoute], async (req, res) => {
     let params = req.body
-    let width = params.width || 1920
-    let height = params.height || 1080
+    params.function = "pdf"
+
+    // set the default width and height
+    if(!params.width){
+        params.width = 1920
+    }
+
+    if(!params.height){
+        params.height = 1080
+    }
 
     // validate input parameters
     if (!params.url && !params.html) {
         return res.json({
             success: false,
-            messae: "Must provide either a url or html content"
+            message: "Must provide either a url or html content"
         })
     }
 
-    // initialize browser
-    const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: '/usr/bin/google-chrome',
-        args: [
-            "--no-sandbox",
-            "--disable-gpu",
-        ]
+    // write the job to the db
+    const job = database.jobs.build({
+        parameters: JSON.stringify(params)
     });
 
-    const page = await browser.newPage();
-    await page.setViewport({ width, height });
+    await job.save();
 
-    // pdf from url
-    if (params.url) {
-        await page.goto(params.url);
+    // set the job id
+    params.jobId = job.id
+
+    // send to queue
+    try{
+        let conn = await amqp.connect(RABBITMQ_URL)
+        let ch = await conn.createChannel()
+        await ch.assertQueue(QUEUENAME, { durable: false })
+        
+        // Publish job
+        await ch.sendToQueue(QUEUENAME, Buffer.from(JSON.stringify(params), 'utf8'))
+        await ch.close()
+        await conn.close()
+    }catch(e){
+        return res.json({
+            success: true,
+            message: e.message
+        })
     }
+    
+    res.json({
+        success: true,
+        jobId: job.id
+    })
+});
 
-    // pdf from html content
-    if (params.html) {
-        await page.setContent(params.html);
-    }
-
-
-    let filename = uuidv4() + ".pdf"
-
-    await page.pdf({
-        width,
-        height,
-        landscape: false,
-        path: `./public/` + filename,
+app.get('/job/:id', [privateRoute], async (req, res) => {
+    const job = await database.jobs.findOne({ 
+        where: { id: req.params.id }
     });
-    await browser.close();
+
+    if(!job){
+        return res.json({
+            success: false,
+            jobId: 'Job not found'
+        }) 
+    }
 
     res.json({
         success: true,
-        filename: filename
+        job: job
     })
 });
 

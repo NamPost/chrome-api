@@ -1,15 +1,25 @@
 version: '2.1'
 services:
-  chrome_api:
-    restart: unless-stopped
-    image: headless-chrome
-    container_name: chrome_api
-    networks:
-      - proxy
-    ports:
-      - 4300:4300
-    volumes:
-      - .:/usr/src/app
+    chrome_api:
+        restart: always
+        image: headless-chrome
+        container_name: chrome_api
+        networks:
+            - proxy
+        ports:
+            - 4300:4300
+        volumes:
+            - .:/usr/src/app
+
+    worker:
+        restart: always
+        image: headless-chrome
+        command: bash -c "node client.js"
+        container_name: chrome_api_worker
+        networks:
+            - proxy
+        volumes:
+            - .:/usr/src/app
 
 
 networks:
