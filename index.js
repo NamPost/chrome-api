@@ -3,16 +3,19 @@
 import express from "express";
 import puppeteer from 'puppeteer';
 import { privateRoute } from "./lib/middleware.js";
+import { create_screenshot, create_pdf } from "./lib/app.js"
 import bodyParser from "body-parser";
 import { v4 as uuidv4 } from 'uuid';
 import amqp from 'amqplib';
 import dotenv from "dotenv";
 import database from "./models/index.js"
+import { EmptyResultError } from "sequelize";
 
 const app = express();
-const RABBITMQ_URL = 'amqp://'+process.env.RABBITMQ_USER+':'+process.env.RABBITMQ_PASS+'@'+process.env.RABBITMQ_HOST+':'+process.env.RABBITMQ_PORT
 const QUEUENAME = "chrome_api"
 dotenv.config();
+
+console.log(process.env.RABBITMQ_URL)
 
 app.use(express.static('public'))
 app.use(bodyParser.json({ limit: '3mb' }));
@@ -33,6 +36,7 @@ app.get('/screenshot', [privateRoute], async (req, res) => {
 
     // validate input parameters
     if (!params.url && !params.html) {
+        res.status(400);
         return res.json({
             success: false,
             message: "Must provide either a url or html content"
@@ -40,43 +44,57 @@ app.get('/screenshot', [privateRoute], async (req, res) => {
     }
 
     if (params.output && !['png', 'jpg'].includes(params.output)) {
+        res.status(400);
         return res.json({
             success: false,
             message: "Output must be one of: png, jpg"
         })
     }
 
-    // write the job to the db
-    const job = database.jobs.build({
-        parameters: JSON.stringify(params)
-    });
-
-    await job.save();
-
-    // set the job id
-    params.jobId = job.id
-
     // send to queue
-    try{
-        let conn = await amqp.connect(RABBITMQ_URL)
-        let ch = await conn.createChannel()
-        await ch.assertQueue(QUEUENAME, { durable: false })
-        
-        // Publish job
-        await ch.sendToQueue(QUEUENAME, Buffer.from(JSON.stringify(params), 'utf8'))
-        await ch.close()
-        await conn.close()
-    }catch(e){
+    if(process.env.RABBITMQ_URL){
+        console.log('send to queue')
+        // write the job to the db
+        const job = database.jobs.build({
+            parameters: JSON.stringify(params)
+        });
+
+        await job.save();
+
+        // set the job id
+        params.jobId = job.id
+
+        try{
+            let conn = await amqp.connect(process.env.RABBITMQ_URL)
+            let ch = await conn.createChannel()
+            await ch.assertQueue(QUEUENAME, { durable: false })
+            
+            // Publish job
+            await ch.sendToQueue(QUEUENAME, Buffer.from(JSON.stringify(params), 'utf8'))
+            await ch.close()
+            await conn.close()
+        }catch(e){
+            res.status(500);
+
+            return res.json({
+                success: true,
+                message: e.message
+            })
+        }
+
         return res.json({
             success: true,
-            message: e.message
+            jobId: job.id
         })
-    }
+    }else{
+        let result = await create_screenshot(params)
 
-    res.json({
-        success: true,
-        jobId: job.id
-    })
+        if(!result.success){
+            res.status(400);
+        }
+        return res.json(result)
+    }
+    
 });
 
 app.get('/pdf', [privateRoute], async (req, res) => {
@@ -100,37 +118,49 @@ app.get('/pdf', [privateRoute], async (req, res) => {
         })
     }
 
-    // write the job to the db
-    const job = database.jobs.build({
-        parameters: JSON.stringify(params)
-    });
-
-    await job.save();
-
-    // set the job id
-    params.jobId = job.id
-
     // send to queue
-    try{
-        let conn = await amqp.connect(RABBITMQ_URL)
-        let ch = await conn.createChannel()
-        await ch.assertQueue(QUEUENAME, { durable: false })
-        
-        // Publish job
-        await ch.sendToQueue(QUEUENAME, Buffer.from(JSON.stringify(params), 'utf8'))
-        await ch.close()
-        await conn.close()
-    }catch(e){
+    if(process.env.RABBITMQ_URL){
+        console.log('send to queue')
+        // write the job to the db
+        const job = database.jobs.build({
+            parameters: JSON.stringify(params)
+        });
+
+        await job.save();
+
+        // set the job id
+        params.jobId = job.id
+
+        try{
+            let conn = await amqp.connect(process.env.RABBITMQ_URL)
+            let ch = await conn.createChannel()
+            await ch.assertQueue(QUEUENAME, { durable: false })
+            
+            // Publish job
+            await ch.sendToQueue(QUEUENAME, Buffer.from(JSON.stringify(params), 'utf8'))
+            await ch.close()
+            await conn.close()
+        }catch(e){
+            res.status(500);
+
+            return res.json({
+                success: true,
+                message: e.message
+            })
+        }
+
         return res.json({
             success: true,
-            message: e.message
+            jobId: job.id
         })
+    }else{
+        let result = await create_screenshot(params)
+
+        if(!result.success){
+            res.status(400);
+        }
+        return res.json(result)
     }
-    
-    res.json({
-        success: true,
-        jobId: job.id
-    })
 });
 
 app.get('/job/:id', [privateRoute], async (req, res) => {

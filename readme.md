@@ -4,17 +4,16 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 
 ### Environment variables
 
-| Variable          | Description                       |
-| ----------------- | :-------------------------------- |
-| DATABASE_NAME     | Sets the MySQL database name      |
-| DATABASE_USER     | Sets the MySQL database username  |
-| DATABASE_PASSWORD | Sets the MySQL database passoword |
-| DATABASE_HOST     | Sets the MySQL database host      |
-| DATABASE_PORT     | Sets the MySQL database port      |
-| RABBITMQ_USER     | Sets the rabbitmq username        |
-| RABBITMQ_PASS     | Sets the rabbitmq password        |
-| RABBITMQ_PORT     | Sets the rabbitmq port            |
-| RABBITMQ_HOST     | Sets the rabbitmq hostname        |
+| Variable          | Description                                                                                      |
+| ----------------- | :----------------------------------------------------------------------------------------------- |
+| DATABASE_NAME     | Sets the MySQL database name                                                                     |
+| DATABASE_USER     | Sets the MySQL database username                                                                 |
+| DATABASE_PASSWORD | Sets the MySQL database passoword                                                                |
+| DATABASE_HOST     | Sets the MySQL database host                                                                     |
+| DATABASE_PORT     | Sets the MySQL database port                                                                     |
+| RABBITMQ_URL      | The connection url for the RabbitMQ instance e.g. amqp://{username}:{password}@{hostname}:{port} |
+
+> when the RABBITMQ_URL variable is not set the service will process the request synchronously and respond with the created filename
 
 ### Database migrations
 
