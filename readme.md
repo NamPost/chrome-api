@@ -11,7 +11,7 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 | DATABASE_PASSWORD | Sets the MySQL database passoword                                                                |
 | DATABASE_HOST     | Sets the MySQL database host                                                                     |
 | DATABASE_PORT     | Sets the MySQL database port                                                                     |
-| DATABASE_USE_SSL  | If the database connection uses SSL or not. value must be on of, true/false                      |
+| DATABASE_USE_SSL  | If the database connection uses SSL or not. value must be one of, true/false                      |
 | RABBITMQ_URL      | The connection url for the RabbitMQ instance e.g. amqp://{username}:{password}@{hostname}:{port} |
 
 > when the RABBITMQ_URL variable is not set the service will process the request synchronously and respond with the created filename
