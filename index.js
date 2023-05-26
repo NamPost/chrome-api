@@ -1,7 +1,4 @@
-// Filename: server.js
-
 import express from "express";
-import puppeteer from 'puppeteer';
 import { privateRoute } from "./lib/middleware.js";
 import { create_screenshot, create_pdf } from "./lib/app.js"
 import bodyParser from "body-parser";

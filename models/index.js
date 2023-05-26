@@ -8,6 +8,8 @@ import mysql2 from "mysql2";
 
 dotenv.config()
 
+const REJECT_UNAUTHORIZED = process.env.DATABASE_USE_SSL == "true"
+
 const sequelize = new Sequelize(
 	process.env.DATABASE_NAME,
 	process.env.DATABASE_USER,
@@ -19,9 +21,16 @@ const sequelize = new Sequelize(
 		dialectModule: mysql2,
 		operatorsAliases: false,
 		pool: process.env.pool,
-		logging: false
+		logging: false,
+		dialectOptions: {
+			ssl: {
+				rejectUnauthorized: REJECT_UNAUTHORIZED,        
+			}
+		}
 	}
 );
+
+sequelize.authenticate();
 
 const db = {
 	'apiKeys': apiKeys(sequelize, Sequelize.DataTypes),
