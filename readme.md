@@ -16,9 +16,13 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 
 `npm run dev`
 
+> When not using docker, please note to set the CHROME_PATH value to the chrome executable on the machine. 
+
 ### Running in Docker
 
 Run the docker-compose stack to build the local image and run in a container.
+
+> When not running in Docker the CHROME_PATH to the executable needs to be set, eg on Windows the chrome executable could be something like: `C:/Program Files (x86)/Google/Chrome/Application/chrome.exe`
 
 `docker-compose up -d`
 
@@ -34,6 +38,7 @@ Run the docker-compose stack to build the local image and run in a container.
 | DATABASE_HOST     | Sets the MySQL database host                                                                          |
 | DATABASE_PORT     | Sets the MySQL database port                                                                          |
 | DATABASE_USE_SSL  | If the database connection uses SSL or not. value must be one of, true/false                          |
+| CHROME_PATH       | Optional, defaults to /usr/bin/google-chrome. If not using docker, eg on Windows you need to provide the exe path C:/Program Files (x86)/Google/Chrome/Application/chrome.exe                          |
 | RABBITMQ_URL      | The connection url for the RabbitMQ instance e.g. amqp://{username}:{password}@{hostname}:{port}      |
 
 > when the RABBITMQ_URL variable is not set the service will process the request synchronously and respond with the created filename
