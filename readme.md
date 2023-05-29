@@ -9,12 +9,15 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 3. Set .env variables as per table below
 4. Install dependencies
 5. Run DB migrations
+6. Generate API key
 
 `npm install`
 
 `npx sequelize-cli db:migrate`
 
 `npm run dev`
+
+`npm run create-key`
 
 > When not using docker, please note to set the CHROME_PATH value to the chrome executable on the machine. 
 
