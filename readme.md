@@ -2,6 +2,27 @@
 
 An API wrapper for puppeteer to generate PDF documents and screenshots from URL's and HTML content
 
+### Getting Started
+
+1. Clone the repo
+2. Enter location
+3. Set .env variables as per table below
+4. Install dependencies
+5. Run DB migrations
+
+
+`npm install`
+
+`npx sequelize-cli db:migrate`
+
+`npm run dev`
+
+### Running in Docker
+
+Run the docker-compose stack to build the local image and run in a container.
+
+`docker-compose up -d`
+
 ### Environment variables
 
 | Variable          | Description                                                                                      |
