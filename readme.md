@@ -23,7 +23,7 @@ An API wrapper for puppeteer to generate PDF documents and screenshots from URL'
 
 ### Running in Docker
 
-Run the docker-compose stack to build the local image and run in a container.
+Run the docker-compose stack to build the local image and run in a container. Please check the available environment variables and docker network to adjust for your own setup.
 
 > When not running in Docker the CHROME_PATH to the executable needs to be set, eg on Windows the chrome executable could be something like: `C:/Program Files (x86)/Google/Chrome/Application/chrome.exe`
 
@@ -52,6 +52,13 @@ Uses the [Sequilize ORM](https://sequelize.org)
 
 Run database migrations with
 `npx sequelize-cli db:migrate`
+
+
+### RabbitMQ Message Broker (optional)
+
+For high traffic workloads a message broker (RabbitMQ) can be used. When the RABBITMQ_URL is set, the API endpoints will place jobs on a queue and return with the queue id for subsequent lookups.
+
+
 
 ### API endpoints
 
