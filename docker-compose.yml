@@ -2,7 +2,7 @@ version: '2.1'
 services:
     chrome_api:
         restart: always
-        image: headless-chrome
+        build: .
         container_name: chrome_api
         networks:
             - proxy
@@ -13,7 +13,7 @@ services:
 
     worker:
         restart: always
-        image: headless-chrome
+        build: .
         command: bash -c "node client.js"
         container_name: chrome_api_worker
         networks:
