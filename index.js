@@ -12,7 +12,7 @@ dotenv.config();
 
 
 app.use(express.static('public'))
-app.use(bodyParser.json({ limit: '3mb' }));
+app.use(bodyParser.json({ limit: '12mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/screenshot', [privateRoute], async (req, res) => {
@@ -175,6 +175,6 @@ app.get('/job/:id', [privateRoute], async (req, res) => {
     })
 });
 
-app.listen(4300, () => {
-    console.log('Listening on port 4300');
+app.listen(process.env.PORT, () => {
+    console.log('Listening on port: '+process.env.PORT);
 });

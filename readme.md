@@ -33,6 +33,7 @@ Run the docker-compose stack to build the local image and run in a container. Pl
 
 | Variable          | Description                                                                                           |
 | ----------------- | :---------------------------------------------------------------------------------------------------- |
+| PORT          | The network port to bind the application to |
 | NODE_ENV          | Required for database config (development, testing or production)                                     |
 | DATABASE_TYPE     | The sequilize database [dialect](https://sequelize.org/docs/v6/other-topics/dialect-specific-things/) |
 | DATABASE_NAME     | Sets the MySQL database name                                                                          |
