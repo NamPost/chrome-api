@@ -87,3 +87,7 @@ returns:
 Every API call needs to have an the "Authorization" HTTP header set with an api key, e.g.
 
 Authorization: {api key}
+
+API keys can be creted by running the "create_token.js" script e.g.
+
+`node create_token.js`
