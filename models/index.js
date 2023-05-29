@@ -35,7 +35,7 @@ const sequelize = new Sequelize(
 		host: process.env.DATABASE_HOST,
 		port: process.env.DATABASE_PORT,
 		dialect: process.env.DATABASE_TYPE,
-		dialectModule: pg,
+		dialectModule: dialectModule,
 		operatorsAliases: false,
 		pool: process.env.pool,
 		logging: false,
