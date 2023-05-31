@@ -1,3 +1,5 @@
+![Chrome API](./docs/images/chrome-api.jpg)
+
 ## Chrome API
 
 An API wrapper for puppeteer to generate PDF documents and screenshots from URL's and HTML content
