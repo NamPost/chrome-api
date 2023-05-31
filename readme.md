@@ -129,3 +129,12 @@ Authorization: {api key}
 API keys can be creted by running the "create_token.js" script e.g.
 
 `node create_token.js`
+
+### Architecture 
+
+![Architecture](./docs/images/chrome_api_arch.png)
+
+
+### Process/data flows 
+
+![Process Flows](./docs/images/Process_flow.png)
